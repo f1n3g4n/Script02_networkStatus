@@ -1,25 +1,37 @@
 #!/usr/bin/python3
-#Script by F1neg4n
+# Created by F1neg4n
 
-import nmap
-import os
+import os, nmap
 
 def welcome():
-    welc = 'NMAP Network Status'
-    info = '[INFO] Python script to scan ports with NMAP'
+    welc = 'NMAP Port Scanner'
+    info = '[INFO] Python script with NMAP to check the network status'
     os.system('clear')
     print(welc + '\n' + '*' * len(welc))
-    print(info)
-    print('------------')
+    print(info + '\n' + '-' * len(info))
     return
 
-def networkStatus():
+def getAddress():
     welcome()
+    try:
+        ipAddress = input('[+] Enter the IP Address: ')
+        while(ipAddress == ''):
+            ipAddress = input('[+] Please, enter the IP Address: ')
+    except(KeyboardInterrupt):
+        os.system('clear')
+        welcome()
+        print('[-] Interrupted by user!')
+        exit()
+    return ipAddress
+
+def networkStatus():
+    hosts = getAddress()
+    print('-----------------------')
     print('[+] Scanning network...')
+    print('-----------------------')
     nm = nmap.PortScanner()
-    nm.scan(hosts='192.168.1.0/24', arguments='-n -sP -PE -PA21,23,80,3389')
+    nm.scan(hosts + '/24', arguments='-n -sP -PE -PA21,23,80,3389')
     hosts_list = [(x, nm[x]['status']['state']) for x in nm.all_hosts()]
-    print('------------')
     print('Host\t\t   Status')
     print('----\t\t   ------')
     for host, status in hosts_list:
